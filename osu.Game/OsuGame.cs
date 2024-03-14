@@ -787,9 +787,6 @@ namespace osu.Game
         }
 
         protected virtual Loader CreateLoader() => new Loader();
-
-        protected virtual UpdateManager CreateUpdateManager() => new UpdateManager();
-
         protected override Container CreateScalingContainer() => new ScalingContainer(ScalingMode.Everything);
 
         #region Beatmap progression
@@ -1044,9 +1041,6 @@ namespace osu.Game
             loadComponentSingleFile(legacyImportManager, Add);
 
             loadComponentSingleFile(screenshotManager, Add);
-
-            // dependency on notification overlay, dependent by settings overlay
-            loadComponentSingleFile(CreateUpdateManager(), Add, true);
 
             // overlay elements
             loadComponentSingleFile(FirstRunOverlay = new FirstRunSetupOverlay(), overlayContent.Add, true);

@@ -7,6 +7,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
+using osu.Game.Configuration;
 using osu.Game.Graphics.Containers;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Input.Bindings;
@@ -29,6 +30,9 @@ namespace osu.Game.Screens.Ranking
 
         [Resolved]
         private ScoreManager scoreManager { get; set; } = null!;
+
+        [Resolved]
+        private LockoutManager lockoutManager { get; set; } = null!;
 
         private ReplayAvailability replayAvailability
         {
@@ -160,12 +164,12 @@ namespace osu.Game.Screens.Ranking
             {
                 case ReplayAvailability.Local:
                     button.TooltipText = @"watch replay";
-                    button.Enabled.Value = true;
+                    button.Enabled.Value = lockoutManager.IsUnlocked.Value;
                     break;
 
                 case ReplayAvailability.Online:
                     button.TooltipText = @"download replay";
-                    button.Enabled.Value = true;
+                    button.Enabled.Value = lockoutManager.IsUnlocked.Value;
                     break;
 
                 default:

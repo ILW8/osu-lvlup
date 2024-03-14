@@ -6,12 +6,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Input;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
-using osu.Game.Online.Spectator;
 using osu.Game.Rulesets.Replays;
 using osu.Game.Scoring;
 using osuTK;
@@ -28,9 +26,6 @@ namespace osu.Game.Rulesets.UI
         private InputManager inputManager;
 
         public int RecordFrameRate = 60;
-
-        [Resolved]
-        private SpectatorClient spectatorClient { get; set; }
 
         protected ReplayRecorder(Score target)
         {
@@ -84,11 +79,7 @@ namespace osu.Game.Rulesets.UI
             var frame = HandleFrame(position, pressedActions, last);
 
             if (frame != null)
-            {
                 target.Replay.Frames.Add(frame);
-
-                spectatorClient?.HandleFrame(frame);
-            }
         }
 
         protected abstract ReplayFrame HandleFrame(Vector2 mousePosition, List<T> actions, ReplayFrame previousFrame);

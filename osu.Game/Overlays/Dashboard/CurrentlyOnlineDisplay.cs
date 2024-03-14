@@ -21,7 +21,6 @@ using osu.Game.Graphics.UserInterface;
 using osu.Game.Online.API;
 using osu.Game.Online.API.Requests.Responses;
 using osu.Game.Online.Metadata;
-using osu.Game.Online.Spectator;
 using osu.Game.Resources.Localisation.Web;
 using osu.Game.Screens;
 using osu.Game.Screens.OnlinePlay.Match.Components;
@@ -45,9 +44,6 @@ namespace osu.Game.Overlays.Dashboard
 
         [Resolved]
         private IAPIProvider api { get; set; }
-
-        [Resolved]
-        private SpectatorClient spectatorClient { get; set; }
 
         [Resolved]
         private MetadataClient metadataClient { get; set; }
@@ -108,9 +104,6 @@ namespace osu.Game.Overlays.Dashboard
 
             onlineUsers.BindTo(metadataClient.UserStates);
             onlineUsers.BindCollectionChanged(onUserUpdated, true);
-
-            playingUsers.BindTo(spectatorClient.PlayingUsers);
-            playingUsers.BindCollectionChanged(onPlayingUsersChanged, true);
         }
 
         protected override void OnFocus(FocusEvent e)

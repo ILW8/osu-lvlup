@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -13,7 +14,9 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
+using osu.Framework.Logging;
 using osu.Game.Beatmaps;
+using osu.Game.Configuration;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Containers;
 using osu.Game.Graphics.Sprites;
@@ -27,6 +30,9 @@ namespace osu.Game.Screens.Play
 {
     public abstract partial class GameplayMenuOverlay : OverlayContainer, IKeyBindingHandler<GlobalAction>
     {
+        [Resolved]
+        private LockoutManager lockoutManager { get; set; } = null!;
+
         protected const int TRANSITION_DURATION = 200;
 
         private const int button_height = 70;
@@ -134,7 +140,7 @@ namespace osu.Game.Screens.Play
                 AddButton(GameplayMenuOverlayStrings.Continue, colours.Green, () => OnResume.Invoke());
 
             if (OnRetry != null)
-                AddButton(GameplayMenuOverlayStrings.Retry, colours.YellowDark, () => OnRetry.Invoke());
+                AddButton(GameplayMenuOverlayStrings.Retry, colours.YellowDark, () => OnRetry.Invoke(), lockoutManager.IsUnlocked);
 
             if (OnQuit != null)
                 AddButton(GameplayMenuOverlayStrings.Quit, new Color4(170, 27, 39, 255), () => OnQuit.Invoke());
@@ -173,7 +179,7 @@ namespace osu.Game.Screens.Play
 
         protected override bool OnMouseMove(MouseMoveEvent e) => true;
 
-        protected void AddButton(LocalisableString text, Color4 colour, Action? action)
+        protected void AddButton(LocalisableString text, Color4 colour, Action? action, Bindable<bool>? enabled = null)
         {
             var button = new Button
             {
@@ -184,6 +190,12 @@ namespace osu.Game.Screens.Play
                 Height = button_height,
                 Action = delegate
                 {
+                    if (enabled != null && !enabled.Value)
+                    {
+                        Logger.Log(@"Play session has expired, you may not perform this action", LoggingTarget.Runtime, LogLevel.Important);
+                        return;
+                    }
+
                     action?.Invoke();
                     Hide();
                 }

@@ -6,7 +6,6 @@
 using osu.Game.Online.Rooms;
 using osu.Game.Tests.Beatmaps;
 using osu.Game.Tests.Visual.OnlinePlay;
-using osu.Game.Tests.Visual.Spectator;
 
 namespace osu.Game.Tests.Visual.Multiplayer
 {
@@ -20,7 +19,6 @@ namespace osu.Game.Tests.Visual.Multiplayer
 
         public TestMultiplayerClient MultiplayerClient => OnlinePlayDependencies.MultiplayerClient;
         public new TestMultiplayerRoomManager RoomManager => OnlinePlayDependencies.RoomManager;
-        public TestSpectatorClient SpectatorClient => OnlinePlayDependencies.SpectatorClient;
 
         protected new MultiplayerTestSceneDependencies OnlinePlayDependencies => (MultiplayerTestSceneDependencies)base.OnlinePlayDependencies;
 

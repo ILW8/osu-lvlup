@@ -12,7 +12,6 @@ using osu.Game.Online.API;
 using osu.Game.Online.Metadata;
 using osu.Game.Online.Multiplayer;
 using osu.Game.Online.Notifications.WebSocket;
-using osu.Game.Online.Spectator;
 using osu.Game.Overlays;
 using osu.Game.Overlays.Notifications;
 using osu.Game.Screens.OnlinePlay;
@@ -32,9 +31,6 @@ namespace osu.Game.Online
         private MultiplayerClient multiplayerClient { get; set; } = null!;
 
         [Resolved]
-        private SpectatorClient spectatorClient { get; set; } = null!;
-
-        [Resolved]
         private MetadataClient metadataClient { get; set; } = null!;
 
         [Resolved]
@@ -42,7 +38,6 @@ namespace osu.Game.Online
 
         private IBindable<APIState> apiState = null!;
         private IBindable<bool> multiplayerState = null!;
-        private IBindable<bool> spectatorState = null!;
 
         /// <summary>
         /// This flag will be set to <c>true</c> when the user has been notified so we don't show more than one notification.
@@ -60,11 +55,9 @@ namespace osu.Game.Online
             apiState = api.State.GetBoundCopy();
             notificationsClient = api.NotificationsClient;
             multiplayerState = multiplayerClient.IsConnected.GetBoundCopy();
-            spectatorState = spectatorClient.IsConnected.GetBoundCopy();
 
             notificationsClient.MessageReceived += notifyAboutForcedDisconnection;
             multiplayerClient.Disconnecting += notifyAboutForcedDisconnection;
-            spectatorClient.Disconnecting += notifyAboutForcedDisconnection;
             metadataClient.Disconnecting += notifyAboutForcedDisconnection;
         }
 
@@ -113,11 +106,6 @@ namespace osu.Game.Online
                     });
                 }
             }));
-
-            spectatorState.BindValueChanged(_ =>
-            {
-                // TODO: handle spectator server failure somehow?
-            });
         }
 
         private void notifyAboutForcedDisconnection()
@@ -152,9 +140,6 @@ namespace osu.Game.Online
 
             if (notificationsClient.IsNotNull())
                 notificationsClient.MessageReceived += notifyAboutForcedDisconnection;
-
-            if (spectatorClient.IsNotNull())
-                spectatorClient.Disconnecting -= notifyAboutForcedDisconnection;
 
             if (multiplayerClient.IsNotNull())
                 multiplayerClient.Disconnecting -= notifyAboutForcedDisconnection;

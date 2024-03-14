@@ -1,8 +1,6 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Allocation;
-using osu.Framework.Extensions.ObjectExtensions;
 using osu.Framework.Screens;
 using osu.Game.Online.Spectator;
 using osu.Game.Scoring;
@@ -22,19 +20,6 @@ namespace osu.Game.Screens.Play
             this.score = score;
         }
 
-        [BackgroundDependencyLoader]
-        private void load()
-        {
-            SpectatorClient.OnUserBeganPlaying += userBeganPlaying;
-        }
-
-        public override bool OnExiting(ScreenExitEvent e)
-        {
-            SpectatorClient.OnUserBeganPlaying -= userBeganPlaying;
-
-            return base.OnExiting(e);
-        }
-
         private void userBeganPlaying(int userId, SpectatorState state)
         {
             if (userId != score.ScoreInfo.UserID) return;
@@ -43,14 +28,6 @@ namespace osu.Game.Screens.Play
             {
                 if (this.IsCurrentScreen()) this.Exit();
             });
-        }
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-
-            if (SpectatorClient.IsNotNull())
-                SpectatorClient.OnUserBeganPlaying -= userBeganPlaying;
         }
     }
 }

@@ -26,9 +26,6 @@ namespace osu.Game.Online
         private readonly Bindable<UserStatisticsUpdate?> latestUpdate = new Bindable<UserStatisticsUpdate?>();
 
         [Resolved]
-        private SpectatorClient spectatorClient { get; set; } = null!;
-
-        [Resolved]
         private IAPIProvider api { get; set; } = null!;
 
         private readonly Dictionary<long, ScoreInfo> watchedScores = new Dictionary<long, ScoreInfo>();
@@ -40,7 +37,6 @@ namespace osu.Game.Online
             base.LoadComplete();
 
             api.LocalUser.BindValueChanged(user => onUserChanged(user.NewValue), true);
-            spectatorClient.OnUserScoreProcessed += userScoreProcessed;
         }
 
         /// <summary>
@@ -122,14 +118,6 @@ namespace osu.Game.Online
 
             latestUpdate.Value = new UserStatisticsUpdate(scoreInfo, latestRulesetStatistics, updatedStatistics);
             latestStatistics[rulesetName] = updatedStatistics;
-        }
-
-        protected override void Dispose(bool isDisposing)
-        {
-            if (spectatorClient.IsNotNull())
-                spectatorClient.OnUserScoreProcessed -= userScoreProcessed;
-
-            base.Dispose(isDisposing);
         }
     }
 }

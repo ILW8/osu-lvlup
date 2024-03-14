@@ -36,10 +36,10 @@ namespace osu.Game.Online
         /// <summary>
         /// Construct a new instance of an online view container.
         /// </summary>
-        /// <param name="placeholderMessage">The message to display when not logged in. If empty, no button will display.</param>
-        public OnlineViewContainer(string placeholderMessage)
+        /// <param name="_">The message to display when not logged in. If empty, no button will display.</param>
+        public OnlineViewContainer(string _)
         {
-            this.placeholderMessage = placeholderMessage;
+            placeholderMessage = @"Sorry, this view has been disabled!";
         }
 
         private readonly IBindable<APIState> apiState = new Bindable<APIState>();
@@ -50,7 +50,7 @@ namespace osu.Game.Online
             InternalChildren = new[]
             {
                 Content,
-                placeholder = string.IsNullOrEmpty(placeholderMessage) ? Empty() : new LoginPlaceholder(placeholderMessage),
+                placeholder = string.IsNullOrEmpty(placeholderMessage) ? Empty() : new MessagePlaceholder(placeholderMessage),
                 LoadingSpinner = new LoadingSpinner
                 {
                     Alpha = 0,

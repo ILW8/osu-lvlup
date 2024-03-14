@@ -30,16 +30,9 @@ namespace osu.Game.Overlays.BeatmapSet.Scores
 
             switch (scope)
             {
+                case BeatmapLeaderboardScope.Local:
                 default:
                     text.Text = BeatmapsetsStrings.ShowScoreboardNoScoresGlobal;
-                    break;
-
-                case BeatmapLeaderboardScope.Friend:
-                    text.Text = BeatmapsetsStrings.ShowScoreboardNoScoresFriend;
-                    break;
-
-                case BeatmapLeaderboardScope.Country:
-                    text.Text = BeatmapsetsStrings.ShowScoreboardNoScoresCountry;
                     break;
             }
         }

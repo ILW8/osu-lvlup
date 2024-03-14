@@ -17,13 +17,6 @@ namespace osu.Game.Overlays.BeatmapSet
 
         protected override TabItem<BeatmapLeaderboardScope> CreateTabItem(BeatmapLeaderboardScope value) => new ScopeSelectorTabItem(value);
 
-        public LeaderboardScopeSelector()
-        {
-            AddItem(BeatmapLeaderboardScope.Global);
-            AddItem(BeatmapLeaderboardScope.Country);
-            AddItem(BeatmapLeaderboardScope.Friend);
-        }
-
         [BackgroundDependencyLoader]
         private void load(OverlayColourProvider colourProvider)
         {

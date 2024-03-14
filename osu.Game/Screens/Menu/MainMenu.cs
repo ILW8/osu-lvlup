@@ -3,13 +3,11 @@
 
 #nullable disable
 
-using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Input.Bindings;
@@ -58,9 +56,6 @@ namespace osu.Game.Screens.Menu
         protected ButtonSystem Buttons;
 
         [Resolved]
-        private GameHost host { get; set; }
-
-        [Resolved]
         private INotificationOverlay notifications { get; set; }
 
         [Resolved]
@@ -78,10 +73,6 @@ namespace osu.Game.Screens.Menu
         protected override BackgroundScreen CreateBackground() => new BackgroundScreenDefault();
 
         protected override bool PlayExitSound => false;
-
-        private Bindable<double> holdDelay;
-
-        private HoldToExitGameOverlay holdToExitGameOverlay;
 
         private bool exitConfirmedViaDialog;
         private bool exitConfirmedViaHoldOrClick;
@@ -102,21 +93,7 @@ namespace osu.Game.Screens.Menu
         [BackgroundDependencyLoader(true)]
         private void load(BeatmapListingOverlay beatmapListing, SettingsOverlay settings, OsuConfigManager config, SessionStatics statics, AudioManager audio)
         {
-            holdDelay = config.GetBindable<double>(OsuSetting.UIHoldActivationDelay);
-
-            if (host.CanExit)
-            {
-                AddInternal(holdToExitGameOverlay = new HoldToExitGameOverlay
-                {
-                    Action = () =>
-                    {
-                        exitConfirmedViaHoldOrClick = holdDelay.Value > 0;
-                        this.Exit();
-                    }
-                });
-            }
-
-            AddRangeInternal(new[]
+            AddRangeInternal(new Drawable[]
             {
                 buttonsContainer = new ParallaxContainer
                 {
@@ -180,8 +157,7 @@ namespace osu.Game.Screens.Menu
                     Margin = new MarginPadding(5),
                     Anchor = Anchor.BottomLeft,
                     Origin = Anchor.BottomLeft,
-                },
-                holdToExitGameOverlay?.CreateProxy() ?? Empty()
+                }
             });
 
             Buttons.StateChanged += state =>
@@ -375,9 +351,6 @@ namespace osu.Game.Screens.Menu
                     {
                         exitConfirmedViaDialog = true;
                         this.Exit();
-                    }, () =>
-                    {
-                        holdToExitGameOverlay.Abort();
                     }));
                 }
 
@@ -412,18 +385,6 @@ namespace osu.Game.Screens.Menu
 
         public bool OnPressed(KeyBindingPressEvent<GlobalAction> e)
         {
-            if (e.Repeat)
-                return false;
-
-            switch (e.Action)
-            {
-                case GlobalAction.Back:
-                    // In the case of a host being able to exit, the back action is handled by ExitConfirmOverlay.
-                    Debug.Assert(!host.CanExit);
-
-                    return host.SuspendToBackground();
-            }
-
             return false;
         }
 

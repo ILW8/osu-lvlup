@@ -7,7 +7,7 @@ namespace osu.Game.Online
     {
         public DevelopmentEndpointConfiguration()
         {
-            WebsiteRootUrl = APIEndpointUrl = @"https://127.0.0.1";
+            WebsiteRootUrl = APIEndpointUrl = @"https://dev.ppy.sh";
             APIClientSecret = @"3LP2mhUrV89xxzD1YKNndXHEhWWCRLPNKioZ9ymT";
             APIClientID = "5";
             SpectatorEndpointUrl = $@"{APIEndpointUrl}/signalr/spectator";

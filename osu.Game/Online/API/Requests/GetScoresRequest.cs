@@ -17,7 +17,7 @@ namespace osu.Game.Online.API.Requests
 
         public GetScoresRequest(IBeatmapInfo beatmapInfo, IRulesetInfo ruleset, BeatmapLeaderboardScope scope = BeatmapLeaderboardScope.Local, IEnumerable<IMod>? mods = null)
         {
-            throw new InvalidOperationException(@"Online functionality has been disabled.");
+            Fail(new NotSupportedException(@"Online functionality has been disabled"));
         }
 
         public bool Equals(GetScoresRequest? other)

@@ -12,7 +12,6 @@ using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osu.Game;
 using osu.Game.IPC;
-using osu.Game.Tournament;
 using SDL2;
 using Squirrel;
 
@@ -77,7 +76,6 @@ namespace osu.Desktop
             string cwd = Environment.CurrentDirectory;
 
             string gameName = base_game_name;
-            bool tournamentClient = false;
 
             foreach (string arg in args)
             {
@@ -88,10 +86,6 @@ namespace osu.Desktop
 
                 switch (key)
                 {
-                    case "--tournament":
-                        tournamentClient = true;
-                        break;
-
                     case "--debug-client-id":
                         if (!DebugUtils.IsDebugBuild)
                             throw new InvalidOperationException("Cannot use this argument in a non-debug build.");
@@ -104,7 +98,7 @@ namespace osu.Desktop
                 }
             }
 
-            using (DesktopGameHost host = Host.GetSuitableDesktopHost(gameName, new HostOptions { IPCPort = !tournamentClient ? OsuGame.IPC_PORT : null }))
+            using (DesktopGameHost host = Host.GetSuitableDesktopHost(gameName, new HostOptions { IPCPort = null }))
             {
                 if (!host.IsPrimaryInstance)
                 {
@@ -133,10 +127,7 @@ namespace osu.Desktop
                     }
                 }
 
-                if (tournamentClient)
-                    host.Run(new TournamentGame());
-                else
-                    host.Run(new OsuGameDesktop(args));
+                host.Run(new OsuGameDesktop(args));
             }
         }
 

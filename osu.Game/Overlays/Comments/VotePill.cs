@@ -35,9 +35,6 @@ namespace osu.Game.Overlays.Comments
         [Resolved]
         private IAPIProvider api { get; set; }
 
-        [Resolved(canBeNull: true)]
-        private LoginOverlay login { get; set; }
-
         [Resolved]
         private OverlayColourProvider colourProvider { get; set; }
 
@@ -90,7 +87,6 @@ namespace osu.Game.Overlays.Comments
         {
             if (!api.IsLoggedIn)
             {
-                login?.Show();
                 return;
             }
 

@@ -91,12 +91,12 @@ namespace osu.Game.Online.API
             authentication = new OAuth(endpointConfiguration.APIClientID, endpointConfiguration.APIClientSecret, APIEndpointUrl);
             log = Logger.GetLogger(LoggingTarget.Network);
 
-            ProvidedUsername = config.Get<string>(OsuSetting.Username);
+            ProvidedUsername = @"Guest";
 
-            authentication.TokenString = config.Get<string>(OsuSetting.Token);
+            authentication.TokenString = @"<NOOP>";
             authentication.Token.ValueChanged += onTokenChanged;
 
-            config.BindWith(OsuSetting.UserOnlineStatus, configStatus);
+            configStatus.Value = UserStatus.Offline;
 
             localUser.BindValueChanged(u =>
             {
@@ -245,9 +245,6 @@ namespace osu.Game.Online.API
                     Status = { Value = configStatus.Value ?? UserStatus.Online }
                 });
             }
-
-            // save the username at this point, if the user requested for it to be.
-            config.SetValue(OsuSetting.Username, config.Get<bool>(OsuSetting.SaveUsername) ? ProvidedUsername : string.Empty);
 
             if (!authentication.HasValidAccessToken)
             {

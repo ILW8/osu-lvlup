@@ -121,9 +121,6 @@ namespace osu.Game.Screens.Menu
         [Resolved]
         private OsuGame? game { get; set; }
 
-        [Resolved]
-        private LoginOverlay? loginOverlay { get; set; }
-
         [BackgroundDependencyLoader]
         private void load(AudioManager audio, IdleTracker? idleTracker, GameHost host)
         {
@@ -167,10 +164,7 @@ namespace osu.Game.Screens.Menu
         private void onMultiplayer()
         {
             if (api.State.Value != APIState.Online)
-            {
-                loginOverlay?.Show();
                 return;
-            }
 
             OnMultiplayer?.Invoke();
         }
@@ -178,10 +172,7 @@ namespace osu.Game.Screens.Menu
         private void onPlaylists()
         {
             if (api.State.Value != APIState.Online)
-            {
-                loginOverlay?.Show();
                 return;
-            }
 
             OnPlaylists?.Invoke();
         }

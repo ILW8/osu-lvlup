@@ -3,7 +3,6 @@
 
 #nullable disable
 
-using System;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
@@ -24,7 +23,6 @@ using osu.Game.Graphics;
 using osu.Game.Graphics.Containers;
 using osu.Game.Input.Bindings;
 using osu.Game.IO;
-using osu.Game.Online.API;
 using osu.Game.Overlays;
 using osu.Game.Overlays.Dialog;
 using osu.Game.Overlays.SkinEditor;
@@ -69,13 +67,7 @@ namespace osu.Game.Screens.Menu
         private MusicController musicController { get; set; }
 
         [Resolved]
-        private IAPIProvider api { get; set; }
-
-        [Resolved]
         private Storage storage { get; set; }
-
-        [Resolved(canBeNull: true)]
-        private LoginOverlay login { get; set; }
 
         [Resolved(canBeNull: true)]
         private IDialogOverlay dialogOverlay { get; set; }
@@ -88,7 +80,6 @@ namespace osu.Game.Screens.Menu
         protected override bool PlayExitSound => false;
 
         private Bindable<double> holdDelay;
-        private Bindable<bool> loginDisplayed;
 
         private HoldToExitGameOverlay holdToExitGameOverlay;
 
@@ -112,7 +103,6 @@ namespace osu.Game.Screens.Menu
         private void load(BeatmapListingOverlay beatmapListing, SettingsOverlay settings, OsuConfigManager config, SessionStatics statics, AudioManager audio)
         {
             holdDelay = config.GetBindable<double>(OsuSetting.UIHoldActivationDelay);
-            loginDisplayed = statics.GetBindable<bool>(Static.LoginOverlayDisplayed);
 
             if (host.CanExit)
             {
@@ -279,27 +269,6 @@ namespace osu.Game.Screens.Menu
                 buttonsContainer.MoveTo(new Vector2(0, 0), FADE_IN_DURATION, Easing.OutQuint);
 
                 sideFlashes.Delay(FADE_IN_DURATION).FadeIn(64, Easing.InQuint);
-            }
-            else if (!api.IsLoggedIn || api.State.Value == APIState.RequiresSecondFactorAuth)
-            {
-                // copy out old action to avoid accidentally capturing logo.Action in closure, causing a self-reference loop.
-                var previousAction = logo.Action;
-
-                // we want to hook into logo.Action to display the login overlay, but also preserve the return value of the old action.
-                // therefore pass the old action to displayLogin, so that it can return that value.
-                // this ensures that the OsuLogo sample does not play when it is not desired.
-                logo.Action = () => displayLogin(previousAction);
-            }
-
-            bool displayLogin(Func<bool> originalAction)
-            {
-                if (!loginDisplayed.Value)
-                {
-                    Scheduler.AddDelayed(() => login?.Show(), 500);
-                    loginDisplayed.Value = true;
-                }
-
-                return originalAction.Invoke();
             }
         }
 

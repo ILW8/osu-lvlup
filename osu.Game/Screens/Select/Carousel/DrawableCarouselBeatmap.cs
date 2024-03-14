@@ -3,12 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
-using osu.Framework.Extensions.LocalisationExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
@@ -19,13 +17,10 @@ using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Input.Events;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.Drawables;
-using osu.Game.Collections;
-using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Backgrounds;
 using osu.Game.Graphics.Sprites;
 using osu.Game.Graphics.UserInterface;
-using osu.Game.Overlays;
 using osu.Game.Resources.Localisation.Web;
 using osu.Game.Rulesets;
 using osuTK;
@@ -51,7 +46,6 @@ namespace osu.Game.Screens.Select.Carousel
         private MenuItem[]? mainMenuItems;
 
         private Action<BeatmapInfo>? selectRequested;
-        private Action<BeatmapInfo>? hideRequested;
 
         private Triangles triangles = null!;
 
@@ -61,16 +55,7 @@ namespace osu.Game.Screens.Select.Carousel
         private OsuSpriteText keyCountText = null!;
 
         [Resolved]
-        private BeatmapSetOverlay? beatmapOverlay { get; set; }
-
-        [Resolved]
         private BeatmapDifficultyCache difficultyCache { get; set; } = null!;
-
-        [Resolved]
-        private ManageCollectionsDialog? manageCollectionsDialog { get; set; }
-
-        [Resolved]
-        private RealmAccess realm { get; set; } = null!;
 
         [Resolved]
         private IBindable<RulesetInfo> ruleset { get; set; } = null!;
@@ -94,9 +79,6 @@ namespace osu.Game.Screens.Select.Carousel
                 mainMenuItems = songSelect.CreateForwardNavigationMenuItemsForBeatmap(() => beatmapInfo);
                 selectRequested = b => songSelect.FinaliseSelection(b);
             }
-
-            if (manager != null)
-                hideRequested = manager.Hide;
 
             Header.Children = new Drawable[]
             {
@@ -269,22 +251,6 @@ namespace osu.Game.Screens.Select.Carousel
 
                 if (mainMenuItems != null)
                     items.AddRange(mainMenuItems);
-
-                if (beatmapInfo.OnlineID > 0 && beatmapOverlay != null)
-                    items.Add(new OsuMenuItem("Details...", MenuItemType.Standard, () => beatmapOverlay.FetchAndShowBeatmap(beatmapInfo.OnlineID)));
-
-                var collectionItems = realm.Realm.All<BeatmapCollection>()
-                                           .OrderBy(c => c.Name)
-                                           .AsEnumerable()
-                                           .Select(c => new CollectionToggleMenuItem(c.ToLive(realm), beatmapInfo)).Cast<OsuMenuItem>().ToList();
-
-                if (manageCollectionsDialog != null)
-                    collectionItems.Add(new OsuMenuItem("Manage...", MenuItemType.Standard, manageCollectionsDialog.Show));
-
-                items.Add(new OsuMenuItem("Collections") { Items = collectionItems });
-
-                if (hideRequested != null)
-                    items.Add(new OsuMenuItem(CommonStrings.ButtonsHide.ToSentence(), MenuItemType.Destructive, () => hideRequested(beatmapInfo)));
 
                 return items.ToArray();
             }

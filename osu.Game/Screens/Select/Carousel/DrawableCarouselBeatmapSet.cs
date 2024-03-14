@@ -16,8 +16,6 @@ using osu.Framework.Graphics.Primitives;
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Utils;
 using osu.Game.Beatmaps;
-using osu.Game.Collections;
-using osu.Game.Database;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Overlays;
 
@@ -26,18 +24,6 @@ namespace osu.Game.Screens.Select.Carousel
     public partial class DrawableCarouselBeatmapSet : DrawableCarouselItem, IHasContextMenu
     {
         public const float HEIGHT = MAX_HEIGHT;
-
-        private Action<BeatmapSetInfo> restoreHiddenRequested = null!;
-        private Action<int>? viewDetails;
-
-        [Resolved]
-        private IDialogOverlay? dialogOverlay { get; set; }
-
-        [Resolved]
-        private ManageCollectionsDialog? manageCollectionsDialog { get; set; }
-
-        [Resolved]
-        private RealmAccess realm { get; set; } = null!;
 
         public IEnumerable<DrawableCarouselItem> DrawableBeatmaps => beatmapContainer?.IsLoaded != true ? Enumerable.Empty<DrawableCarouselItem>() : beatmapContainer.AliveChildren;
 
@@ -69,15 +55,6 @@ namespace osu.Game.Screens.Select.Carousel
         {
             if (songSelect != null)
                 mainMenuItems = songSelect.CreateForwardNavigationMenuItemsForBeatmap(() => (((CarouselBeatmapSet)Item!).GetNextToSelect() as CarouselBeatmap)!.BeatmapInfo);
-
-            restoreHiddenRequested = s =>
-            {
-                foreach (var b in s.Beatmaps)
-                    manager.Restore(b);
-            };
-
-            if (beatmapOverlay != null)
-                viewDetails = beatmapOverlay.FetchAndShowBeatmapSet;
         }
 
         protected override void Update()
@@ -270,71 +247,8 @@ namespace osu.Game.Screens.Select.Carousel
                 if (mainMenuItems != null)
                     items.AddRange(mainMenuItems);
 
-                if (beatmapSet.OnlineID > 0 && viewDetails != null)
-                    items.Add(new OsuMenuItem("Details...", MenuItemType.Standard, () => viewDetails(beatmapSet.OnlineID)));
-
-                var collectionItems = realm.Realm.All<BeatmapCollection>()
-                                           .OrderBy(c => c.Name)
-                                           .AsEnumerable()
-                                           .Select(createCollectionMenuItem)
-                                           .ToList();
-
-                if (manageCollectionsDialog != null)
-                    collectionItems.Add(new OsuMenuItem("Manage...", MenuItemType.Standard, manageCollectionsDialog.Show));
-
-                items.Add(new OsuMenuItem("Collections") { Items = collectionItems });
-
-                if (beatmapSet.Beatmaps.Any(b => b.Hidden))
-                    items.Add(new OsuMenuItem("Restore all hidden", MenuItemType.Standard, () => restoreHiddenRequested(beatmapSet)));
-
-                if (dialogOverlay != null)
-                    items.Add(new OsuMenuItem("Delete...", MenuItemType.Destructive, () => dialogOverlay.Push(new BeatmapDeleteDialog(beatmapSet))));
                 return items.ToArray();
             }
-        }
-
-        private MenuItem createCollectionMenuItem(BeatmapCollection collection)
-        {
-            Debug.Assert(beatmapSet != null);
-
-            TernaryState state;
-
-            int countExisting = beatmapSet.Beatmaps.Count(b => collection.BeatmapMD5Hashes.Contains(b.MD5Hash));
-
-            if (countExisting == beatmapSet.Beatmaps.Count)
-                state = TernaryState.True;
-            else if (countExisting > 0)
-                state = TernaryState.Indeterminate;
-            else
-                state = TernaryState.False;
-
-            var liveCollection = collection.ToLive(realm);
-
-            return new TernaryStateToggleMenuItem(collection.Name, MenuItemType.Standard, s =>
-            {
-                liveCollection.PerformWrite(c =>
-                {
-                    foreach (var b in beatmapSet.Beatmaps)
-                    {
-                        switch (s)
-                        {
-                            case TernaryState.True:
-                                if (c.BeatmapMD5Hashes.Contains(b.MD5Hash))
-                                    continue;
-
-                                c.BeatmapMD5Hashes.Add(b.MD5Hash);
-                                break;
-
-                            case TernaryState.False:
-                                c.BeatmapMD5Hashes.Remove(b.MD5Hash);
-                                break;
-                        }
-                    }
-                });
-            })
-            {
-                State = { Value = state }
-            };
         }
     }
 }

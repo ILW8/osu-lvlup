@@ -83,7 +83,7 @@ namespace osu.Game.Screens.Select
         /// <summary>
         /// Whether entering editor mode should be allowed.
         /// </summary>
-        public virtual bool AllowEditing => true;
+        public virtual bool AllowEditing => false;
 
         public bool BeatmapSetsLoaded => IsLoaded && Carousel.BeatmapSetsLoaded;
 

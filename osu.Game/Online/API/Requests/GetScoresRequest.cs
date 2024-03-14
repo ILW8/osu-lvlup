@@ -7,9 +7,7 @@ using osu.Game.Rulesets;
 using osu.Game.Screens.Select.Leaderboards;
 using osu.Game.Online.API.Requests.Responses;
 using osu.Game.Rulesets.Mods;
-using System.Text;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace osu.Game.Online.API.Requests
 {
@@ -17,49 +15,16 @@ namespace osu.Game.Online.API.Requests
     {
         public const int MAX_SCORES_PER_REQUEST = 50;
 
-        private readonly IBeatmapInfo beatmapInfo;
-        private readonly BeatmapLeaderboardScope scope;
-        private readonly IRulesetInfo ruleset;
-        private readonly IEnumerable<IMod> mods;
-
-        public GetScoresRequest(IBeatmapInfo beatmapInfo, IRulesetInfo ruleset, BeatmapLeaderboardScope scope = BeatmapLeaderboardScope.Global, IEnumerable<IMod>? mods = null)
+        public GetScoresRequest(IBeatmapInfo beatmapInfo, IRulesetInfo ruleset, BeatmapLeaderboardScope scope = BeatmapLeaderboardScope.Local, IEnumerable<IMod>? mods = null)
         {
-            if (beatmapInfo.OnlineID <= 0)
-                throw new InvalidOperationException($"Cannot lookup a beatmap's scores without having a populated {nameof(IBeatmapInfo.OnlineID)}.");
-
-            if (scope == BeatmapLeaderboardScope.Local)
-                throw new InvalidOperationException("Should not attempt to request online scores for a local scoped leaderboard");
-
-            this.beatmapInfo = beatmapInfo;
-            this.scope = scope;
-            this.ruleset = ruleset ?? throw new ArgumentNullException(nameof(ruleset));
-            this.mods = mods ?? Array.Empty<IMod>();
-        }
-
-        protected override string Target => $@"beatmaps/{beatmapInfo.OnlineID}/solo-scores{createQueryParameters()}";
-
-        private string createQueryParameters()
-        {
-            StringBuilder query = new StringBuilder(@"?");
-
-            query.Append($@"type={scope.ToString().ToLowerInvariant()}");
-            query.Append($@"&mode={ruleset.ShortName}");
-
-            foreach (var mod in mods)
-                query.Append($@"&mods[]={mod.Acronym}");
-
-            return query.ToString();
+            throw new InvalidOperationException(@"Online functionality has been disabled.");
         }
 
         public bool Equals(GetScoresRequest? other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-
-            return beatmapInfo.Equals(other.beatmapInfo)
-                   && scope == other.scope
-                   && ruleset.Equals(other.ruleset)
-                   && mods.SequenceEqual(other.mods);
+            return true;
         }
+
+        protected override string Target => "/";
     }
 }

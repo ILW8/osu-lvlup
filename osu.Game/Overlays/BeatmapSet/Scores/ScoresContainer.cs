@@ -30,7 +30,7 @@ namespace osu.Game.Overlays.BeatmapSet.Scores
 
         public readonly Bindable<APIBeatmap> Beatmap = new Bindable<APIBeatmap>();
         private readonly Bindable<IRulesetInfo> ruleset = new Bindable<IRulesetInfo>();
-        private readonly Bindable<BeatmapLeaderboardScope> scope = new Bindable<BeatmapLeaderboardScope>(BeatmapLeaderboardScope.Global);
+        private readonly Bindable<BeatmapLeaderboardScope> scope = new Bindable<BeatmapLeaderboardScope>();
         private readonly IBindable<APIUser> user = new Bindable<APIUser>();
 
         private readonly Box background;
@@ -222,7 +222,7 @@ namespace osu.Game.Overlays.BeatmapSet.Scores
             else
                 ruleset.Value = beatmapRuleset;
 
-            scope.Value = BeatmapLeaderboardScope.Global;
+            scope.Value = BeatmapLeaderboardScope.Local;
         }
 
         private void onUserChanged(ValueChangedEvent<APIUser> user)
@@ -244,13 +244,6 @@ namespace osu.Game.Overlays.BeatmapSet.Scores
             {
                 Scores = null;
                 Hide();
-                return;
-            }
-
-            if ((scope.Value != BeatmapLeaderboardScope.Global || modSelector.SelectedMods.Count > 0) && !userIsSupporter)
-            {
-                Scores = null;
-                notSupporterPlaceholder.Show();
                 return;
             }
 

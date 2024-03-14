@@ -80,9 +80,6 @@ namespace osu.Game.Screens.Select
         protected override BeatmapDetailAreaTabItem[] CreateTabItems() => base.CreateTabItems().Concat(new BeatmapDetailAreaTabItem[]
         {
             new BeatmapDetailAreaLeaderboardTabItem<BeatmapLeaderboardScope>(BeatmapLeaderboardScope.Local),
-            new BeatmapDetailAreaLeaderboardTabItem<BeatmapLeaderboardScope>(BeatmapLeaderboardScope.Global),
-            new BeatmapDetailAreaLeaderboardTabItem<BeatmapLeaderboardScope>(BeatmapLeaderboardScope.Country),
-            new BeatmapDetailAreaLeaderboardTabItem<BeatmapLeaderboardScope>(BeatmapLeaderboardScope.Friend),
         }).ToArray();
 
         private BeatmapDetailAreaTabItem getTabItemFromTabType(TabType type)
@@ -94,15 +91,6 @@ namespace osu.Game.Screens.Select
 
                 case TabType.Local:
                     return new BeatmapDetailAreaLeaderboardTabItem<BeatmapLeaderboardScope>(BeatmapLeaderboardScope.Local);
-
-                case TabType.Global:
-                    return new BeatmapDetailAreaLeaderboardTabItem<BeatmapLeaderboardScope>(BeatmapLeaderboardScope.Global);
-
-                case TabType.Country:
-                    return new BeatmapDetailAreaLeaderboardTabItem<BeatmapLeaderboardScope>(BeatmapLeaderboardScope.Country);
-
-                case TabType.Friends:
-                    return new BeatmapDetailAreaLeaderboardTabItem<BeatmapLeaderboardScope>(BeatmapLeaderboardScope.Friend);
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type));
@@ -122,15 +110,6 @@ namespace osu.Game.Screens.Select
                         case BeatmapLeaderboardScope.Local:
                             return TabType.Local;
 
-                        case BeatmapLeaderboardScope.Country:
-                            return TabType.Country;
-
-                        case BeatmapLeaderboardScope.Global:
-                            return TabType.Global;
-
-                        case BeatmapLeaderboardScope.Friend:
-                            return TabType.Friends;
-
                         default:
                             throw new ArgumentOutOfRangeException(nameof(item));
                     }
@@ -144,9 +123,6 @@ namespace osu.Game.Screens.Select
         {
             Details,
             Local,
-            Country,
-            Global,
-            Friends
         }
     }
 }

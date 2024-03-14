@@ -64,12 +64,6 @@ namespace osu.Game.Overlays.Settings.Sections
                     Current = skins.CurrentSkinInfo,
                     Keywords = new[] { @"skins" },
                 },
-                new SettingsButton
-                {
-                    Text = SkinSettingsStrings.SkinLayoutEditor,
-                    Action = () => skinEditor?.ToggleVisibility(),
-                },
-                new ExportSkinButton(),
                 new DeleteSkinButton(),
             };
         }

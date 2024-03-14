@@ -38,7 +38,6 @@ namespace osu.Game.Screens.Select
         public override MenuItem[] CreateForwardNavigationMenuItemsForBeatmap(Func<BeatmapInfo> getBeatmap) => new MenuItem[]
         {
             new OsuMenuItem(ButtonSystemStrings.Play.ToSentence(), MenuItemType.Highlighted, () => FinaliseSelection(getBeatmap())),
-            new OsuMenuItem(ButtonSystemStrings.Edit.ToSentence(), MenuItemType.Standard, () => Edit(getBeatmap()))
         };
 
         protected override UserActivity InitialActivity => new UserActivity.ChoosingBeatmap();

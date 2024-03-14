@@ -3,7 +3,6 @@
 
 #nullable disable
 
-using System.Linq;
 using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -22,7 +21,6 @@ using osu.Game.Graphics.Containers;
 using osu.Game.Input.Bindings;
 using osu.Game.IO;
 using osu.Game.Overlays;
-using osu.Game.Overlays.Dialog;
 using osu.Game.Overlays.SkinEditor;
 using osu.Game.Rulesets;
 using osu.Game.Screens.Backgrounds;
@@ -56,9 +54,6 @@ namespace osu.Game.Screens.Menu
         protected ButtonSystem Buttons;
 
         [Resolved]
-        private INotificationOverlay notifications { get; set; }
-
-        [Resolved]
         private MusicController musicController { get; set; }
 
         [Resolved]
@@ -74,11 +69,7 @@ namespace osu.Game.Screens.Menu
 
         protected override bool PlayExitSound => false;
 
-        private bool exitConfirmedViaDialog;
-        private bool exitConfirmedViaHoldOrClick;
-
         private ParallaxContainer buttonsContainer;
-        private SongTicker songTicker;
         private Container logoTarget;
         private SystemTitle systemTitle;
         private MenuTip menuTip;
@@ -114,22 +105,12 @@ namespace osu.Game.Screens.Menu
                             OnSolo = loadSoloSongSelect,
                             OnMultiplayer = () => this.Push(new Multiplayer()),
                             OnPlaylists = () => this.Push(new Playlists()),
-                            OnExit = () =>
-                            {
-                                exitConfirmedViaHoldOrClick = true;
-                                this.Exit();
-                            }
+                            OnExit = () => { }
                         }
                     }
                 },
                 logoTarget = new Container { RelativeSizeAxes = Axes.Both, },
                 sideFlashes = new MenuSideFlashes(),
-                songTicker = new SongTicker
-                {
-                    Anchor = Anchor.TopRight,
-                    Origin = Anchor.TopRight,
-                    Margin = new MarginPadding { Right = 15, Top = 5 }
-                },
                 new KiaiMenuFountains(),
                 bottomElementsFlow = new FillFlowContainer
                 {
@@ -328,49 +309,7 @@ namespace osu.Game.Screens.Menu
 
         public override bool OnExiting(ScreenExitEvent e)
         {
-            bool requiresConfirmation =
-                // we need to have a dialog overlay to confirm in the first place.
-                dialogOverlay != null
-                // if the dialog has already displayed and been accepted by the user, we are good.
-                && !exitConfirmedViaDialog
-                // Only require confirmation if there is either an ongoing operation or the user exited via a non-hold escape press.
-                && (notifications.HasOngoingOperations || !exitConfirmedViaHoldOrClick);
-
-            if (requiresConfirmation)
-            {
-                if (dialogOverlay.CurrentDialog is ConfirmExitDialog exitDialog)
-                {
-                    if (exitDialog.Buttons.OfType<PopupDialogOkButton>().FirstOrDefault() != null)
-                        exitDialog.PerformOkAction();
-                    else
-                        exitDialog.Flash();
-                }
-                else
-                {
-                    dialogOverlay.Push(new ConfirmExitDialog(() =>
-                    {
-                        exitConfirmedViaDialog = true;
-                        this.Exit();
-                    }));
-                }
-
-                return true;
-            }
-
-            Buttons.State = ButtonSystemState.Exit;
-            OverlayActivationMode.Value = OverlayActivation.Disabled;
-
-            songTicker.Hide();
-
-            this.FadeOut(3000);
-
-            bottomElementsFlow
-                .FadeOut(500, Easing.OutQuint);
-
-            supporterDisplay
-                .FadeOut(500, Easing.OutQuint);
-
-            return base.OnExiting(e);
+            return true; // prevent game from exiting
         }
 
         public void PresentBeatmap(WorkingBeatmap beatmap, RulesetInfo ruleset)

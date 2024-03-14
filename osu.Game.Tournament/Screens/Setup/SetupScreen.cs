@@ -12,7 +12,6 @@ using osu.Game.Graphics;
 using osu.Game.Graphics.Containers;
 using osu.Game.Graphics.UserInterfaceV2;
 using osu.Game.Online.API;
-using osu.Game.Overlays;
 using osu.Game.Rulesets;
 using osu.Game.Tournament.IPC;
 using osu.Game.Tournament.Models;
@@ -24,7 +23,6 @@ namespace osu.Game.Tournament.Screens.Setup
     {
         private FillFlowContainer fillFlow = null!;
 
-        private LoginOverlay? loginOverlay;
         private ResolutionSelector resolution = null!;
 
         [Resolved]
@@ -97,17 +95,6 @@ namespace osu.Game.Tournament.Screens.Setup
                     Action = () =>
                     {
                         api.Logout();
-
-                        if (loginOverlay == null)
-                        {
-                            AddInternal(loginOverlay = new LoginOverlay
-                            {
-                                Anchor = Anchor.TopRight,
-                                Origin = Anchor.TopRight,
-                            });
-                        }
-
-                        loginOverlay.State.Value = Visibility.Visible;
                     },
                     Value = api.LocalUser.Value.Username,
                     Failing = api.IsLoggedIn != true,

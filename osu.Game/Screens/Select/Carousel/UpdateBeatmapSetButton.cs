@@ -33,9 +33,6 @@ namespace osu.Game.Screens.Select.Carousel
         private IAPIProvider api { get; set; } = null!;
 
         [Resolved]
-        private LoginOverlay? loginOverlay { get; set; }
-
-        [Resolved]
         private IDialogOverlay? dialogOverlay { get; set; }
 
         public UpdateBeatmapSetButton(BeatmapSetInfo beatmapSetInfo)
@@ -113,10 +110,7 @@ namespace osu.Game.Screens.Select.Carousel
         private void updateBeatmap()
         {
             if (!api.IsLoggedIn)
-            {
-                loginOverlay?.Show();
                 return;
-            }
 
             if (dialogOverlay != null && beatmapSetInfo.Status == BeatmapOnlineStatus.LocallyModified && !updateConfirmed)
             {

@@ -38,9 +38,6 @@ namespace osu.Game.Overlays.Comments
         [Resolved]
         protected IAPIProvider API { get; private set; } = null!;
 
-        [Resolved]
-        private LoginOverlay? loginOverlay { get; set; }
-
         private readonly IBindable<APIState> apiState = new Bindable<APIState>();
 
         /// <summary>
@@ -138,12 +135,6 @@ namespace osu.Game.Overlays.Comments
                                                     Action = () => OnCommit(Current.Value),
                                                     Text = GetButtonText(true)
                                                 },
-                                                logInButton = new EditorButton
-                                                {
-                                                    Width = 100,
-                                                    Action = () => loginOverlay?.Show(),
-                                                    Text = GetButtonText(false)
-                                                }
                                             }
                                         },
                                         loadingSpinner = new LoadingSpinner

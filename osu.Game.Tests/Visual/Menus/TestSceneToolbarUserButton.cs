@@ -57,7 +57,6 @@ namespace osu.Game.Tests.Visual.Menus
                                     RelativeSizeAxes = Axes.Y,
                                     Width = 2,
                                 },
-                                new ToolbarUserButton(),
                                 new Box
                                 {
                                     Colour = Color4.DarkRed,

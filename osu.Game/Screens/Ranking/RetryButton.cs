@@ -5,6 +5,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Game.Configuration;
 using osu.Game.Graphics;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Screens.Play;
@@ -18,6 +19,9 @@ namespace osu.Game.Screens.Ranking
 
         [Resolved]
         private Player? player { get; set; }
+
+        [Resolved]
+        private LockoutManager lockoutManager { get; set; } = null!;
 
         public RetryButton()
         {
@@ -46,6 +50,8 @@ namespace osu.Game.Screens.Ranking
         private void load(OsuColour colours)
         {
             background.Colour = colours.Green;
+
+            Enabled.BindTo(lockoutManager.IsUnlocked);
 
             if (player != null)
                 Action = () => player.Restart();

@@ -36,9 +36,6 @@ namespace osu.Game.Screens.Spectate
         private RulesetStore rulesets { get; set; } = null!;
 
         [Resolved]
-        private SpectatorClient spectatorClient { get; set; } = null!;
-
-        [Resolved]
         private UserLookupCache userLookupCache { get; set; } = null!;
 
         [Resolved]
@@ -76,14 +73,8 @@ namespace osu.Game.Screens.Spectate
                     userMap[u.Id] = u;
                 }
 
-                userStates.BindTo(spectatorClient.WatchedUserStates);
-                userStates.BindCollectionChanged(onUserStatesChanged, true);
-
                 realmSubscription = realm.RegisterForNotifications(
                     realm => realm.All<BeatmapSetInfo>().Where(s => !s.DeletePending), beatmapsChanged);
-
-                foreach ((int id, var _) in userMap)
-                    spectatorClient.WatchUser(id);
             }));
         }
 
@@ -260,19 +251,11 @@ namespace osu.Game.Screens.Spectate
 
             users.Remove(userId);
             userMap.Remove(userId);
-
-            spectatorClient.StopWatchingUser(userId);
         }
 
         protected override void Dispose(bool isDisposing)
         {
             base.Dispose(isDisposing);
-
-            if (spectatorClient.IsNotNull())
-            {
-                foreach ((int userId, var _) in userMap)
-                    spectatorClient.StopWatchingUser(userId);
-            }
 
             realmSubscription?.Dispose();
         }

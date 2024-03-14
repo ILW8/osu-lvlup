@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Allocation;
-using osu.Framework.Extensions.ObjectExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
 using osu.Game.Beatmaps;
@@ -18,9 +17,6 @@ namespace osu.Game.Screens.Play
 {
     public abstract partial class SpectatorPlayer : Player
     {
-        [Resolved]
-        protected SpectatorClient SpectatorClient { get; private set; } = null!;
-
         private readonly Score score;
 
         protected override bool CheckModsAllowFailure()
@@ -78,7 +74,6 @@ namespace osu.Game.Screens.Play
 
             // Start gameplay along with the very first arrival frame (the latest one).
             score.Replay.Frames.Clear();
-            SpectatorClient.OnNewFrames += userSentFrames;
         }
 
         private void userSentFrames(int userId, FrameDataBundle bundle)
@@ -118,21 +113,6 @@ namespace osu.Game.Screens.Play
         protected override void PrepareReplay()
         {
             DrawableRuleset?.SetReplayScore(score);
-        }
-
-        public override bool OnExiting(ScreenExitEvent e)
-        {
-            SpectatorClient.OnNewFrames -= userSentFrames;
-
-            return base.OnExiting(e);
-        }
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-
-            if (SpectatorClient.IsNotNull())
-                SpectatorClient.OnNewFrames -= userSentFrames;
         }
     }
 }

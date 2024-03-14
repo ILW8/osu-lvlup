@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
-using osu.Framework.Extensions.ObjectExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Timing;
 using osu.Game.Rulesets;
@@ -63,9 +62,6 @@ namespace osu.Game.Online.Spectator
         }
 
         [Resolved]
-        private SpectatorClient spectatorClient { get; set; } = null!;
-
-        [Resolved]
         private RulesetStore rulesetStore { get; set; } = null!;
 
         private readonly IBindableDictionary<int, SpectatorState> spectatorStates = new BindableDictionary<int, SpectatorState>();
@@ -85,11 +81,6 @@ namespace osu.Game.Online.Spectator
             base.LoadComplete();
 
             Mode.BindValueChanged(_ => UpdateScore());
-
-            spectatorStates.BindTo(spectatorClient.WatchedUserStates);
-            spectatorStates.BindCollectionChanged(onSpectatorStatesChanged, true);
-
-            spectatorClient.OnNewFrames += onNewFrames;
         }
 
         private void onSpectatorStatesChanged(object? sender, NotifyDictionaryChangedEventArgs<int, SpectatorState> e)
@@ -158,14 +149,6 @@ namespace osu.Game.Online.Spectator
             Accuracy.Value = frame.Header.Accuracy;
             Combo.Value = frame.Header.Combo;
             TotalScore.Value = frame.Header.TotalScore;
-        }
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-
-            if (spectatorClient.IsNotNull())
-                spectatorClient.OnNewFrames -= onNewFrames;
         }
 
         private class TimedFrame : IComparable<TimedFrame>

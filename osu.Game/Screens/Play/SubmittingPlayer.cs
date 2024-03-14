@@ -18,7 +18,6 @@ using osu.Game.Online;
 using osu.Game.Online.API;
 using osu.Game.Online.Multiplayer;
 using osu.Game.Online.Rooms;
-using osu.Game.Online.Spectator;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Scoring;
 
@@ -36,9 +35,6 @@ namespace osu.Game.Screens.Play
 
         [Resolved]
         private IAPIProvider api { get; set; }
-
-        [Resolved]
-        private SpectatorClient spectatorClient { get; set; }
 
         [Resolved]
         private SessionStatics statics { get; set; }
@@ -188,7 +184,6 @@ namespace osu.Game.Screens.Play
             score.ScoreInfo.Date = DateTimeOffset.Now;
 
             await submitScore(score).ConfigureAwait(false);
-            spectatorClient.EndPlaying(GameplayState);
             userStatisticsWatcher?.RegisterForStatisticsUpdateAfter(score.ScoreInfo);
         }
 
@@ -207,8 +202,6 @@ namespace osu.Game.Screens.Play
                 if (realmBeatmap != null)
                     realmBeatmap.LastPlayed = DateTimeOffset.Now;
             });
-
-            spectatorClient.BeginPlaying(token, GameplayState, Score);
         }
 
         protected override void OnFail()
@@ -233,7 +226,6 @@ namespace osu.Game.Screens.Play
                 Task.Run(async () =>
                 {
                     await submitScore(Score.DeepClone()).ConfigureAwait(false);
-                    spectatorClient.EndPlaying(GameplayState);
                 }).FireAndForget();
             }
         }

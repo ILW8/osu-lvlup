@@ -10,7 +10,6 @@ using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions;
 using osu.Framework.Extensions.Color4Extensions;
-using osu.Framework.Extensions.ObjectExtensions;
 using osu.Game.Configuration;
 using osu.Game.Database;
 using osu.Game.Graphics;
@@ -34,9 +33,6 @@ namespace osu.Game.Screens.Play.HUD
 
         [Resolved]
         private OsuColour colours { get; set; } = null!;
-
-        [Resolved]
-        private SpectatorClient spectatorClient { get; set; } = null!;
 
         [Resolved]
         private MultiplayerClient multiplayerClient { get; set; } = null!;
@@ -115,8 +111,6 @@ namespace osu.Game.Screens.Play.HUD
             // BindableList handles binding in a really bad way (Clear then AddRange) so we need to do this manually..
             foreach (var user in playingUsers)
             {
-                spectatorClient.WatchUser(user.UserID);
-
                 if (!multiplayerClient.CurrentMatchPlayingUserIds.Contains(user.UserID))
                     playingUsersChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new[] { user.UserID }));
             }
@@ -164,8 +158,6 @@ namespace osu.Game.Screens.Play.HUD
 
                     foreach (int userId in e.OldItems.OfType<int>())
                     {
-                        spectatorClient.StopWatchingUser(userId);
-
                         if (UserScores.TryGetValue(userId, out var trackedData))
                             trackedData.MarkUserQuit();
                     }
@@ -188,17 +180,6 @@ namespace osu.Game.Screens.Play.HUD
 
                 if (TeamScores.TryGetValue(u.Team.Value, out var team))
                     team.Value += u.ScoreProcessor.TotalScore.Value;
-            }
-        }
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-
-            if (spectatorClient.IsNotNull())
-            {
-                foreach (var user in playingUsers)
-                    spectatorClient.StopWatchingUser(user.UserID);
             }
         }
 

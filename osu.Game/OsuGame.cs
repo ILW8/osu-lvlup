@@ -64,7 +64,6 @@ using osu.Game.Screens.Play;
 using osu.Game.Screens.Ranking;
 using osu.Game.Screens.Select;
 using osu.Game.Skinning;
-using osu.Game.Updater;
 using osu.Game.Users;
 using osu.Game.Utils;
 using osuTK.Graphics;

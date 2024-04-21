@@ -30,7 +30,6 @@ namespace osu.Game.Overlays.Comments
         protected readonly Bindable<string> Current = new Bindable<string>(string.Empty);
 
         private RoundedButton commitButton = null!;
-        private RoundedButton logInButton = null!;
         private LoadingSpinner loadingSpinner = null!;
 
         protected TextBox TextBox { get; private set; } = null!;
@@ -159,32 +158,12 @@ namespace osu.Game.Overlays.Comments
         {
             base.LoadComplete();
             Current.BindValueChanged(_ => updateCommitButtonState(), true);
-            apiState.BindValueChanged(updateStateForLoggedIn, true);
         }
 
         protected abstract void OnCommit(string text);
 
         private void updateCommitButtonState() =>
             commitButton.Enabled.Value = loadingSpinner.State.Value == Visibility.Hidden && !string.IsNullOrEmpty(Current.Value);
-
-        private void updateStateForLoggedIn(ValueChangedEvent<APIState> state) => Schedule(() =>
-        {
-            bool isAvailable = state.NewValue > APIState.Offline;
-
-            TextBox.PlaceholderText = GetPlaceholderText(isAvailable);
-            TextBox.ReadOnly = !isAvailable;
-
-            if (isAvailable)
-            {
-                commitButton.Show();
-                logInButton.Hide();
-            }
-            else
-            {
-                commitButton.Hide();
-                logInButton.Show();
-            }
-        });
 
         private partial class EditorTextBox : OsuTextBox
         {

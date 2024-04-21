@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "osu.Game.Rulesets.Taiko", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "osu.Game.Rulesets.Mania", "osu.Game.Rulesets.Mania\osu.Game.Rulesets.Mania.csproj", "{48F4582B-7687-4621-9CBE-5C24197CB536}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "osu.Game.Tests", "osu.Game.Tests\osu.Game.Tests.csproj", "{54377672-20B1-40AF-8087-5CF73BF3953A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "osu.Desktop", "osu.Desktop\osu.Desktop.csproj", "{419659FD-72EA-4678-9EB8-B22A746CED70}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "osu.Game.Rulesets.Catch.Tests", "osu.Game.Rulesets.Catch.Tests\osu.Game.Rulesets.Catch.Tests.csproj", "{3AD63355-D6B1-4365-8D31-5652C989BEF1}"
@@ -60,8 +58,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		osu.sln.DotSettings = osu.sln.DotSettings
 		osu.TestProject.props = osu.TestProject.props
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "osu.Game.Benchmarks", "osu.Game.Benchmarks\osu.Game.Benchmarks.csproj", "{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{70CFC05F-CF79-4A7F-81EC-B32F1E564480}"
 EndProject
@@ -161,18 +157,6 @@ Global
 		{48F4582B-7687-4621-9CBE-5C24197CB536}.Release|iPhone.Build.0 = Release|Any CPU
 		{48F4582B-7687-4621-9CBE-5C24197CB536}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{48F4582B-7687-4621-9CBE-5C24197CB536}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Release|iPhone.Build.0 = Release|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{54377672-20B1-40AF-8087-5CF73BF3953A}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{419659FD-72EA-4678-9EB8-B22A746CED70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{419659FD-72EA-4678-9EB8-B22A746CED70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{419659FD-72EA-4678-9EB8-B22A746CED70}.Debug|iPhone.ActiveCfg = Debug|Any CPU
@@ -401,18 +385,6 @@ Global
 		{5CC222DC-5716-4499-B897-DCBDDA4A5CF9}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{5CC222DC-5716-4499-B897-DCBDDA4A5CF9}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{5CC222DC-5716-4499-B897-DCBDDA4A5CF9}.Release|iPhoneSimulator.Deploy.0 = Release|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Release|iPhone.Build.0 = Release|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{93632F2D-2BB4-46C1-A7B8-F8CF2FB27118}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{9014CA66-5217-49F6-8C1E-3430FD08EF61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9014CA66-5217-49F6-8C1E-3430FD08EF61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9014CA66-5217-49F6-8C1E-3430FD08EF61}.Debug|iPhone.ActiveCfg = Debug|Any CPU

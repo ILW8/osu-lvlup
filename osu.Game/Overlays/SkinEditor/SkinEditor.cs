@@ -68,9 +68,6 @@ namespace osu.Game.Overlays.SkinEditor
         [Resolved]
         private EditorClipboard clipboard { get; set; } = null!;
 
-        [Resolved]
-        private SkinEditorOverlay? skinEditorOverlay { get; set; }
-
         [Cached]
         private readonly OverlayColourProvider colourProvider = new OverlayColourProvider(OverlayColourScheme.Blue);
 
@@ -157,8 +154,6 @@ namespace osu.Game.Overlays.SkinEditor
                                                     new EditorMenuItem(CommonStrings.Export, MenuItemType.Standard, () => skins.ExportCurrentSkin()) { Action = { Disabled = !RuntimeInfo.IsDesktop } },
                                                     new OsuMenuItemSpacer(),
                                                     new EditorMenuItem(CommonStrings.RevertToDefault, MenuItemType.Destructive, () => dialogOverlay?.Push(new RevertConfirmDialog(revert))),
-                                                    new OsuMenuItemSpacer(),
-                                                    new EditorMenuItem(CommonStrings.Exit, MenuItemType.Standard, () => skinEditorOverlay?.Hide()),
                                                 },
                                             },
                                             new MenuItem(CommonStrings.MenuBarEdit)

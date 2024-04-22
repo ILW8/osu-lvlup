@@ -51,7 +51,6 @@ using osu.Game.Overlays;
 using osu.Game.Overlays.BeatmapListing;
 using osu.Game.Overlays.Music;
 using osu.Game.Overlays.Notifications;
-using osu.Game.Overlays.SkinEditor;
 using osu.Game.Overlays.Toolbar;
 using osu.Game.Overlays.Volume;
 using osu.Game.Rulesets.Mods;
@@ -112,8 +111,6 @@ namespace osu.Game
         private WikiOverlay wikiOverlay;
 
         private ChangelogOverlay changelogOverlay;
-
-        private SkinEditorOverlay skinEditor;
 
         private Container overlayContent;
 
@@ -1056,7 +1053,6 @@ namespace osu.Game
             loadComponentSingleFile(userProfile = new UserProfileOverlay(), overlayContent.Add, true);
             loadComponentSingleFile(beatmapSetOverlay = new BeatmapSetOverlay(), overlayContent.Add, true);
             loadComponentSingleFile(wikiOverlay = new WikiOverlay(), overlayContent.Add, true);
-            loadComponentSingleFile(skinEditor = new SkinEditorOverlay(ScreenContainer), overlayContent.Add, true);
 
             loadComponentSingleFile(new NowPlayingOverlay
             {
@@ -1357,10 +1353,6 @@ namespace osu.Game
                     fpsCounter.ToggleVisibility();
                     return true;
 
-                case GlobalAction.ToggleSkinEditor:
-                    skinEditor.ToggleVisibility();
-                    return true;
-
                 case GlobalAction.ResetInputSettings:
                     Host.ResetInputHandlers();
                     frameworkConfig.GetBindable<ConfineMouseMode>(FrameworkSetting.ConfineMouseMode).SetDefault();
@@ -1379,12 +1371,6 @@ namespace osu.Game
                     return true;
 
                 case GlobalAction.RandomSkin:
-                    // Don't allow random skin selection while in the skin editor.
-                    // This is mainly to stop many "osu! default (modified)" skins being created via the SkinManager.EnsureMutableSkin() path.
-                    // If people want this to work we can potentially avoid selecting default skins when the editor is open, or allow a maximum of one mutable skin somehow.
-                    if (skinEditor.State.Value == Visibility.Visible)
-                        return false;
-
                     SkinManager.SelectRandomSkin();
                     return true;
             }
@@ -1525,8 +1511,6 @@ namespace osu.Game
                 else
                     BackButton.Hide();
             }
-
-            skinEditor.SetTarget((OsuScreen)newScreen);
         }
 
         private void screenPushed(IScreen lastScreen, IScreen newScreen) => screenChanged(lastScreen, newScreen);

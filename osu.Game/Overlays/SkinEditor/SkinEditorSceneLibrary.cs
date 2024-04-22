@@ -28,9 +28,6 @@ namespace osu.Game.Overlays.SkinEditor
         [Resolved]
         private IPerformFromScreenRunner? performer { get; set; }
 
-        [Resolved]
-        private SkinEditorOverlay? skinEditorOverlay { get; set; }
-
         public SkinEditorSceneLibrary()
         {
             Height = HEIGHT;
@@ -80,14 +77,7 @@ namespace osu.Game.Overlays.SkinEditor
 
                                         screen.Push(new PlaySongSelect());
                                     }, new[] { typeof(SongSelect) })
-                                },
-                                new SceneButton
-                                {
-                                    Text = SkinEditorStrings.Gameplay,
-                                    Anchor = Anchor.CentreLeft,
-                                    Origin = Anchor.CentreLeft,
-                                    Action = () => skinEditorOverlay?.PresentGameplay(),
-                                },
+                                }
                             }
                         },
                     }

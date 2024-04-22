@@ -15,9 +15,6 @@ namespace osu.Game.Overlays.SkinEditor
 {
     public partial class NonSkinnableScreenPlaceholder : CompositeDrawable
     {
-        [Resolved]
-        private SkinEditorOverlay? skinEditorOverlay { get; set; }
-
         [BackgroundDependencyLoader]
         private void load(OverlayColourProvider colourProvider)
         {
@@ -57,15 +54,6 @@ namespace osu.Game.Overlays.SkinEditor
                             RelativeSizeAxes = Axes.X,
                             AutoSizeAxes = Axes.Y,
                             Text = "Please navigate to a skinnable screen using the scene library",
-                        },
-                        new RoundedButton
-                        {
-                            Anchor = Anchor.TopCentre,
-                            Origin = Anchor.TopCentre,
-                            Width = 200,
-                            Margin = new MarginPadding { Top = 20 },
-                            Action = () => skinEditorOverlay?.Hide(),
-                            Text = "Return to game"
                         }
                     }
                 },

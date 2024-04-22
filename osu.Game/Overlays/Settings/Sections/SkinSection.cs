@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -17,7 +16,6 @@ using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Localisation;
-using osu.Game.Overlays.SkinEditor;
 using osu.Game.Screens.Select;
 using osu.Game.Skinning;
 using Realms;
@@ -51,8 +49,8 @@ namespace osu.Game.Overlays.Settings.Sections
 
         private IDisposable realmSubscription;
 
-        [BackgroundDependencyLoader(permitNulls: true)]
-        private void load([CanBeNull] SkinEditorOverlay skinEditor)
+        [BackgroundDependencyLoader]
+        private void load()
         {
             Children = new Drawable[]
             {
@@ -63,8 +61,7 @@ namespace osu.Game.Overlays.Settings.Sections
                     LabelText = SkinSettingsStrings.CurrentSkin,
                     Current = skins.CurrentSkinInfo,
                     Keywords = new[] { @"skins" },
-                },
-                new DeleteSkinButton(),
+                }
             };
         }
 

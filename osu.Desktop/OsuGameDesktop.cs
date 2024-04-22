@@ -117,8 +117,6 @@ namespace osu.Desktop
         {
             base.LoadComplete();
 
-            LoadComponentAsync(new DiscordRichPresence(), Add);
-
             if (RuntimeInfo.OS == RuntimeInfo.Platform.Windows)
                 LoadComponentAsync(new GameplayWinKeyBlocker(), Add);
 

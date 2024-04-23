@@ -7,12 +7,23 @@ using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Localisation;
 using osu.Game.Configuration;
+using osu.Game.Overlays.Dialog;
 
 namespace osu.Game.Overlays.Settings.Sections.Maintenance
 {
+    public partial class ResetAllSettingsDialog : DangerousActionDialog
+    {
+        public ResetAllSettingsDialog(Action resetAction)
+        {
+            HeaderText = @"Reset all settings?";
+            BodyText = @"Keybinds will not be reset. Reset them in the keybinds configuration menu.";
+            DangerousAction = resetAction;
+        }
+    }
+
     public partial class ResetSettings : SettingsSubsection
     {
-        protected override LocalisableString Header => "Settings";
+        protected override LocalisableString Header => @"Settings";
 
         [Resolved(CanBeNull = true)]
         private FirstRunSetupOverlay? firstRunSetupOverlay { get; set; }
@@ -22,10 +33,10 @@ namespace osu.Game.Overlays.Settings.Sections.Maintenance
         {
             Add(new DangerousSettingsButton
             {
-                Text = "Reset all settings to default",
+                Text = @"Reset all settings to default",
                 Action = () =>
                 {
-                    dialogOverlay?.Push(new MassDeleteConfirmationDialog(() =>
+                    dialogOverlay?.Push(new ResetAllSettingsDialog(() =>
                     {
                         Scheduler.Add(() =>
                         {

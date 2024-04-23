@@ -15,6 +15,7 @@ namespace osu.Game.Overlays.Settings.Sections.Input
         [BackgroundDependencyLoader(permitNulls: true)]
         private void load(RulesetStore rulesets)
         {
+            AddSection(new ResetKeyBindingsSection());
             AddSection(new GlobalKeyBindingsSection());
 
             foreach (var ruleset in rulesets.AvailableRulesets)

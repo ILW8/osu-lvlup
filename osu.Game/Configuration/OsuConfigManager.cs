@@ -175,7 +175,7 @@ namespace osu.Game.Configuration
 
             TypeMapping[OsuSetting.ShowFirstRunSetup] = SetDefault(OsuSetting.ShowFirstRunSetup, true).GetType();
 
-            TypeMapping[OsuSetting.ScreenshotFormat] = SetDefault(OsuSetting.ScreenshotFormat, ScreenshotFormat.Jpg).GetType();
+            TypeMapping[OsuSetting.ScreenshotFormat] = SetDefault(OsuSetting.ScreenshotFormat, ScreenshotFormat.Png).GetType();
             TypeMapping[OsuSetting.ScreenshotCaptureMenuCursor] = SetDefault(OsuSetting.ScreenshotCaptureMenuCursor, false).GetType();
 
             TypeMapping[OsuSetting.SongSelectRightMouseScroll] = SetDefault(OsuSetting.SongSelectRightMouseScroll, false).GetType();

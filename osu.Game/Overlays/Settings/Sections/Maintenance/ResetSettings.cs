@@ -71,14 +71,10 @@ namespace osu.Game.Overlays.Settings.Sections.Maintenance
                                 switch (hopefullyTheRightBindable)
                                 {
                                     case IBindable bindable:
+                                        if (bindable.Disabled)
+                                            continue;
+
                                         var theBindableType = bindable.GetType();
-
-                                        // if (!theBindableType.IsGenericType)
-                                        // {
-                                        //     break;
-                                        // }
-                                        // var bindableGenericArgument = bindable.GetType().GetGenericArguments()[0];
-
                                         var setDefaultMethod = theBindableType.GetMethod("SetDefault");
                                         setDefaultMethod?.Invoke(bindable, null);
 
@@ -88,9 +84,6 @@ namespace osu.Game.Overlays.Settings.Sections.Maintenance
                                         // welp something went wrong
                                         continue;
                                 }
-
-                                // var configBindable = config.GetBindable<object>(settingKey);
-                                // configBindable.Value = configBindable.Default; // type error, can't convert from object to <whatever> type
                             }
 
                             firstRunSetupOverlay?.Show();

@@ -38,6 +38,7 @@ namespace osu.Game.Overlays
             new RulesetSection(),
             new AudioSection(),
             new GraphicsSection(),
+            new MaintenanceSection()
         };
 
         private readonly List<SettingsSubPanel> subPanels = new List<SettingsSubPanel>();

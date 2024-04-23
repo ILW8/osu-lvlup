@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
@@ -33,49 +34,54 @@ namespace osu.Game.Configuration
             Migrate();
         }
 
+        public Dictionary<OsuSetting, Type> TypeMapping = new Dictionary<OsuSetting, Type>();
+
         protected override void InitialiseDefaults()
         {
             // UI/selection defaults
-            SetDefault(OsuSetting.Ruleset, string.Empty);
-            SetDefault(OsuSetting.Skin, SkinInfo.ARGON_SKIN.ToString());
+            // TypeMapping[OsuSetting.Ruleset] = SetDefault(OsuSetting.Ruleset, string.Empty).GetType();
+            TypeMapping[OsuSetting.Ruleset] = SetDefault(OsuSetting.Ruleset, string.Empty).GetType();
+            TypeMapping[OsuSetting.Skin] = SetDefault(OsuSetting.Skin, SkinInfo.ARGON_SKIN.ToString()).GetType();
 
-            SetDefault(OsuSetting.BeatmapDetailTab, PlayBeatmapDetailArea.TabType.Local);
-            SetDefault(OsuSetting.BeatmapDetailModsFilter, false);
+            TypeMapping[OsuSetting.BeatmapDetailTab] = SetDefault(OsuSetting.BeatmapDetailTab, PlayBeatmapDetailArea.TabType.Local).GetType();
+            TypeMapping[OsuSetting.BeatmapDetailModsFilter] = SetDefault(OsuSetting.BeatmapDetailModsFilter, false).GetType();
 
-            SetDefault(OsuSetting.ShowConvertedBeatmaps, true);
-            SetDefault(OsuSetting.DisplayStarsMinimum, 0.0, 0, 10, 0.1);
-            SetDefault(OsuSetting.DisplayStarsMaximum, 10.1, 0, 10.1, 0.1);
+            TypeMapping[OsuSetting.ShowConvertedBeatmaps] = SetDefault(OsuSetting.ShowConvertedBeatmaps, true).GetType();
+            TypeMapping[OsuSetting.DisplayStarsMinimum] = SetDefault(OsuSetting.DisplayStarsMinimum, 0.0, 0, 10, 0.1).GetType();
+            TypeMapping[OsuSetting.DisplayStarsMaximum] = SetDefault(OsuSetting.DisplayStarsMaximum, 10.1, 0, 10.1, 0.1).GetType();
 
-            SetDefault(OsuSetting.SongSelectGroupingMode, GroupMode.All);
-            SetDefault(OsuSetting.SongSelectSortingMode, SortMode.Title);
+            TypeMapping[OsuSetting.SongSelectGroupingMode] = SetDefault(OsuSetting.SongSelectGroupingMode, GroupMode.All).GetType();
+            TypeMapping[OsuSetting.SongSelectSortingMode] = SetDefault(OsuSetting.SongSelectSortingMode, SortMode.Title).GetType();
 
-            SetDefault(OsuSetting.RandomSelectAlgorithm, RandomSelectAlgorithm.RandomPermutation);
-            SetDefault(OsuSetting.ModSelectHotkeyStyle, ModSelectHotkeyStyle.Sequential);
-            SetDefault(OsuSetting.ModSelectTextSearchStartsActive, true);
+            TypeMapping[OsuSetting.RandomSelectAlgorithm] = SetDefault(OsuSetting.RandomSelectAlgorithm, RandomSelectAlgorithm.RandomPermutation).GetType();
+            TypeMapping[OsuSetting.ModSelectHotkeyStyle] = SetDefault(OsuSetting.ModSelectHotkeyStyle, ModSelectHotkeyStyle.Sequential).GetType();
+            TypeMapping[OsuSetting.ModSelectTextSearchStartsActive] = SetDefault(OsuSetting.ModSelectTextSearchStartsActive, true).GetType();
 
-            SetDefault(OsuSetting.ChatDisplayHeight, ChatOverlay.DEFAULT_HEIGHT, 0.2f, 1f);
+            TypeMapping[OsuSetting.ChatDisplayHeight] = SetDefault(OsuSetting.ChatDisplayHeight, ChatOverlay.DEFAULT_HEIGHT, 0.2f, 1f).GetType();
 
-            SetDefault(OsuSetting.BeatmapListingCardSize, BeatmapCardSize.Normal);
+            TypeMapping[OsuSetting.BeatmapListingCardSize] = SetDefault(OsuSetting.BeatmapListingCardSize, BeatmapCardSize.Normal).GetType();
 
-            SetDefault(OsuSetting.ProfileCoverExpanded, true);
+            TypeMapping[OsuSetting.ProfileCoverExpanded] = SetDefault(OsuSetting.ProfileCoverExpanded, true).GetType();
 
-            SetDefault(OsuSetting.ToolbarClockDisplayMode, ToolbarClockDisplayMode.Full);
+            TypeMapping[OsuSetting.ToolbarClockDisplayMode] = SetDefault(OsuSetting.ToolbarClockDisplayMode, ToolbarClockDisplayMode.Full).GetType();
 
-            SetDefault(OsuSetting.SongSelectBackgroundBlur, true);
+            TypeMapping[OsuSetting.SongSelectBackgroundBlur] = SetDefault(OsuSetting.SongSelectBackgroundBlur, true).GetType();
 
             // Online settings
-            SetDefault(OsuSetting.Username, string.Empty);
-            SetDefault(OsuSetting.Token, string.Empty);
+            TypeMapping[OsuSetting.Username] = SetDefault(OsuSetting.Username, string.Empty).GetType();
+            TypeMapping[OsuSetting.Token] = SetDefault(OsuSetting.Token, string.Empty).GetType();
 
 #pragma warning disable CS0618 // Type or member is obsolete
             // this default set MUST remain despite the setting being deprecated, because `SetDefault()` calls are implicitly used to declare the type returned for the lookup.
             // if this is removed, the setting will be interpreted as a string, and `Migrate()` will fail due to cast failure.
             // can be removed 20240618
-            SetDefault(OsuSetting.AutomaticallyDownloadWhenSpectating, false);
+            TypeMapping[OsuSetting.AutomaticallyDownloadWhenSpectating] = SetDefault(OsuSetting.AutomaticallyDownloadWhenSpectating, false).GetType();
 #pragma warning restore CS0618 // Type or member is obsolete
-            SetDefault(OsuSetting.AutomaticallyDownloadMissingBeatmaps, false);
+            TypeMapping[OsuSetting.AutomaticallyDownloadMissingBeatmaps] = SetDefault(OsuSetting.AutomaticallyDownloadMissingBeatmaps, false).GetType();
 
-            SetDefault(OsuSetting.SavePassword, false).ValueChanged += enabled =>
+            var savePasswordDefault = SetDefault(OsuSetting.SavePassword, false);
+            TypeMapping[OsuSetting.SavePassword] = savePasswordDefault.GetType();
+            savePasswordDefault.ValueChanged += enabled =>
             {
                 if (enabled.NewValue)
                     SetValue(OsuSetting.SaveUsername, true);
@@ -83,7 +89,9 @@ namespace osu.Game.Configuration
                     GetBindable<string>(OsuSetting.Token).SetDefault();
             };
 
-            SetDefault(OsuSetting.SaveUsername, true).ValueChanged += enabled =>
+            var saveUsernameDefault = SetDefault(OsuSetting.SaveUsername, true);
+            TypeMapping[OsuSetting.SaveUsername] = saveUsernameDefault.GetType();
+            saveUsernameDefault.ValueChanged += enabled =>
             {
                 if (!enabled.NewValue)
                 {
@@ -92,120 +100,120 @@ namespace osu.Game.Configuration
                 }
             };
 
-            SetDefault(OsuSetting.ExternalLinkWarning, true);
-            SetDefault(OsuSetting.PreferNoVideo, false);
+            TypeMapping[OsuSetting.ExternalLinkWarning] = SetDefault(OsuSetting.ExternalLinkWarning, true).GetType();
+            TypeMapping[OsuSetting.PreferNoVideo] = SetDefault(OsuSetting.PreferNoVideo, false).GetType();
 
-            SetDefault(OsuSetting.ShowOnlineExplicitContent, false);
+            TypeMapping[OsuSetting.ShowOnlineExplicitContent] = SetDefault(OsuSetting.ShowOnlineExplicitContent, false).GetType();
 
-            SetDefault(OsuSetting.NotifyOnUsernameMentioned, true);
-            SetDefault(OsuSetting.NotifyOnPrivateMessage, true);
+            TypeMapping[OsuSetting.NotifyOnUsernameMentioned] = SetDefault(OsuSetting.NotifyOnUsernameMentioned, true).GetType();
+            TypeMapping[OsuSetting.NotifyOnPrivateMessage] = SetDefault(OsuSetting.NotifyOnPrivateMessage, true).GetType();
 
             // Audio
-            SetDefault(OsuSetting.VolumeInactive, 0.25, 0, 1, 0.01);
+            TypeMapping[OsuSetting.VolumeInactive] = SetDefault(OsuSetting.VolumeInactive, 0.25, 0, 1, 0.01).GetType();
 
-            SetDefault(OsuSetting.MenuVoice, true);
-            SetDefault(OsuSetting.MenuMusic, true);
-            SetDefault(OsuSetting.MenuTips, true);
+            TypeMapping[OsuSetting.MenuVoice] = SetDefault(OsuSetting.MenuVoice, true).GetType();
+            TypeMapping[OsuSetting.MenuMusic] = SetDefault(OsuSetting.MenuMusic, true).GetType();
+            TypeMapping[OsuSetting.MenuTips] = SetDefault(OsuSetting.MenuTips, true).GetType();
 
-            SetDefault(OsuSetting.AudioOffset, 0, -500.0, 500.0, 1);
+            TypeMapping[OsuSetting.AudioOffset] = SetDefault(OsuSetting.AudioOffset, 0, -500.0, 500.0, 1).GetType();
 
             // Input
-            SetDefault(OsuSetting.MenuCursorSize, 1.0f, 0.5f, 2f, 0.01f);
-            SetDefault(OsuSetting.GameplayCursorSize, 1.0f, 0.1f, 2f, 0.01f);
-            SetDefault(OsuSetting.GameplayCursorDuringTouch, false);
-            SetDefault(OsuSetting.AutoCursorSize, false);
+            TypeMapping[OsuSetting.MenuCursorSize] = SetDefault(OsuSetting.MenuCursorSize, 1.0f, 0.5f, 2f, 0.01f).GetType();
+            TypeMapping[OsuSetting.GameplayCursorSize] = SetDefault(OsuSetting.GameplayCursorSize, 1.0f, 0.1f, 2f, 0.01f).GetType();
+            TypeMapping[OsuSetting.GameplayCursorDuringTouch] = SetDefault(OsuSetting.GameplayCursorDuringTouch, false).GetType();
+            TypeMapping[OsuSetting.AutoCursorSize] = SetDefault(OsuSetting.AutoCursorSize, false).GetType();
 
-            SetDefault(OsuSetting.MouseDisableButtons, false);
-            SetDefault(OsuSetting.MouseDisableWheel, false);
-            SetDefault(OsuSetting.ConfineMouseMode, OsuConfineMouseMode.DuringGameplay);
+            TypeMapping[OsuSetting.MouseDisableButtons] = SetDefault(OsuSetting.MouseDisableButtons, false).GetType();
+            TypeMapping[OsuSetting.MouseDisableWheel] = SetDefault(OsuSetting.MouseDisableWheel, false).GetType();
+            TypeMapping[OsuSetting.ConfineMouseMode] = SetDefault(OsuSetting.ConfineMouseMode, OsuConfineMouseMode.DuringGameplay).GetType();
 
-            SetDefault(OsuSetting.TouchDisableGameplayTaps, false);
+            TypeMapping[OsuSetting.TouchDisableGameplayTaps] = SetDefault(OsuSetting.TouchDisableGameplayTaps, false).GetType();
 
             // Graphics
-            SetDefault(OsuSetting.ShowFpsDisplay, false);
+            TypeMapping[OsuSetting.ShowFpsDisplay] = SetDefault(OsuSetting.ShowFpsDisplay, false).GetType();
 
-            SetDefault(OsuSetting.ShowStoryboard, true);
-            SetDefault(OsuSetting.BeatmapSkins, true);
-            SetDefault(OsuSetting.BeatmapColours, true);
-            SetDefault(OsuSetting.BeatmapHitsounds, true);
+            TypeMapping[OsuSetting.ShowStoryboard] = SetDefault(OsuSetting.ShowStoryboard, true).GetType();
+            TypeMapping[OsuSetting.BeatmapSkins] = SetDefault(OsuSetting.BeatmapSkins, true).GetType();
+            TypeMapping[OsuSetting.BeatmapColours] = SetDefault(OsuSetting.BeatmapColours, true).GetType();
+            TypeMapping[OsuSetting.BeatmapHitsounds] = SetDefault(OsuSetting.BeatmapHitsounds, true).GetType();
 
-            SetDefault(OsuSetting.CursorRotation, true);
+            TypeMapping[OsuSetting.CursorRotation] = SetDefault(OsuSetting.CursorRotation, true).GetType();
 
-            SetDefault(OsuSetting.MenuParallax, true);
+            TypeMapping[OsuSetting.MenuParallax] = SetDefault(OsuSetting.MenuParallax, true).GetType();
 
             // See https://stackoverflow.com/a/63307411 for default sourcing.
-            SetDefault(OsuSetting.Prefer24HourTime, !CultureInfoHelper.SystemCulture.DateTimeFormat.ShortTimePattern.Contains(@"tt"));
+            TypeMapping[OsuSetting.Prefer24HourTime] = SetDefault(OsuSetting.Prefer24HourTime, !CultureInfoHelper.SystemCulture.DateTimeFormat.ShortTimePattern.Contains(@"tt")).GetType();
 
             // Gameplay
-            SetDefault(OsuSetting.PositionalHitsoundsLevel, 0.2f, 0, 1);
-            SetDefault(OsuSetting.DimLevel, 0.7, 0, 1, 0.01);
-            SetDefault(OsuSetting.BlurLevel, 0, 0, 1, 0.01);
-            SetDefault(OsuSetting.LightenDuringBreaks, true);
+            TypeMapping[OsuSetting.PositionalHitsoundsLevel] = SetDefault(OsuSetting.PositionalHitsoundsLevel, 0.2f, 0, 1).GetType();
+            TypeMapping[OsuSetting.DimLevel] = SetDefault(OsuSetting.DimLevel, 0.7, 0, 1, 0.01).GetType();
+            TypeMapping[OsuSetting.BlurLevel] = SetDefault(OsuSetting.BlurLevel, 0, 0, 1, 0.01).GetType();
+            TypeMapping[OsuSetting.LightenDuringBreaks] = SetDefault(OsuSetting.LightenDuringBreaks, true).GetType();
 
-            SetDefault(OsuSetting.HitLighting, true);
+            TypeMapping[OsuSetting.HitLighting] = SetDefault(OsuSetting.HitLighting, true).GetType();
 
-            SetDefault(OsuSetting.HUDVisibilityMode, HUDVisibilityMode.Always);
-            SetDefault(OsuSetting.ShowHealthDisplayWhenCantFail, true);
-            SetDefault(OsuSetting.FadePlayfieldWhenHealthLow, true);
-            SetDefault(OsuSetting.KeyOverlay, false);
-            SetDefault(OsuSetting.ReplaySettingsOverlay, true);
-            SetDefault(OsuSetting.ReplayPlaybackControlsExpanded, true);
-            SetDefault(OsuSetting.GameplayLeaderboard, true);
-            SetDefault(OsuSetting.AlwaysPlayFirstComboBreak, true);
+            TypeMapping[OsuSetting.HUDVisibilityMode] = SetDefault(OsuSetting.HUDVisibilityMode, HUDVisibilityMode.Always).GetType();
+            TypeMapping[OsuSetting.ShowHealthDisplayWhenCantFail] = SetDefault(OsuSetting.ShowHealthDisplayWhenCantFail, true).GetType();
+            TypeMapping[OsuSetting.FadePlayfieldWhenHealthLow] = SetDefault(OsuSetting.FadePlayfieldWhenHealthLow, true).GetType();
+            TypeMapping[OsuSetting.KeyOverlay] = SetDefault(OsuSetting.KeyOverlay, false).GetType();
+            TypeMapping[OsuSetting.ReplaySettingsOverlay] = SetDefault(OsuSetting.ReplaySettingsOverlay, true).GetType();
+            TypeMapping[OsuSetting.ReplayPlaybackControlsExpanded] = SetDefault(OsuSetting.ReplayPlaybackControlsExpanded, true).GetType();
+            TypeMapping[OsuSetting.GameplayLeaderboard] = SetDefault(OsuSetting.GameplayLeaderboard, true).GetType();
+            TypeMapping[OsuSetting.AlwaysPlayFirstComboBreak] = SetDefault(OsuSetting.AlwaysPlayFirstComboBreak, true).GetType();
 
-            SetDefault(OsuSetting.FloatingComments, false);
+            TypeMapping[OsuSetting.FloatingComments] = SetDefault(OsuSetting.FloatingComments, false).GetType();
 
-            SetDefault(OsuSetting.ScoreDisplayMode, ScoringMode.Standardised);
+            TypeMapping[OsuSetting.ScoreDisplayMode] = SetDefault(OsuSetting.ScoreDisplayMode, ScoringMode.Standardised).GetType();
 
-            SetDefault(OsuSetting.IncreaseFirstObjectVisibility, true);
-            SetDefault(OsuSetting.GameplayDisableWinKey, true);
+            TypeMapping[OsuSetting.IncreaseFirstObjectVisibility] = SetDefault(OsuSetting.IncreaseFirstObjectVisibility, true).GetType();
+            TypeMapping[OsuSetting.GameplayDisableWinKey] = SetDefault(OsuSetting.GameplayDisableWinKey, true).GetType();
 
             // Update
-            SetDefault(OsuSetting.ReleaseStream, ReleaseStream.Lazer);
+            TypeMapping[OsuSetting.ReleaseStream] = SetDefault(OsuSetting.ReleaseStream, ReleaseStream.Lazer).GetType();
 
-            SetDefault(OsuSetting.Version, string.Empty);
+            TypeMapping[OsuSetting.Version] = SetDefault(OsuSetting.Version, string.Empty).GetType();
 
-            SetDefault(OsuSetting.ShowFirstRunSetup, true);
+            TypeMapping[OsuSetting.ShowFirstRunSetup] = SetDefault(OsuSetting.ShowFirstRunSetup, true).GetType();
 
-            SetDefault(OsuSetting.ScreenshotFormat, ScreenshotFormat.Jpg);
-            SetDefault(OsuSetting.ScreenshotCaptureMenuCursor, false);
+            TypeMapping[OsuSetting.ScreenshotFormat] = SetDefault(OsuSetting.ScreenshotFormat, ScreenshotFormat.Jpg).GetType();
+            TypeMapping[OsuSetting.ScreenshotCaptureMenuCursor] = SetDefault(OsuSetting.ScreenshotCaptureMenuCursor, false).GetType();
 
-            SetDefault(OsuSetting.SongSelectRightMouseScroll, false);
+            TypeMapping[OsuSetting.SongSelectRightMouseScroll] = SetDefault(OsuSetting.SongSelectRightMouseScroll, false).GetType();
 
-            SetDefault(OsuSetting.Scaling, ScalingMode.Off);
-            SetDefault(OsuSetting.SafeAreaConsiderations, true);
-            SetDefault(OsuSetting.ScalingBackgroundDim, 0.9f, 0.5f, 1f);
+            TypeMapping[OsuSetting.Scaling] = SetDefault(OsuSetting.Scaling, ScalingMode.Off).GetType();
+            TypeMapping[OsuSetting.SafeAreaConsiderations] = SetDefault(OsuSetting.SafeAreaConsiderations, true).GetType();
+            TypeMapping[OsuSetting.ScalingBackgroundDim] = SetDefault(OsuSetting.ScalingBackgroundDim, 0.9f, 0.5f, 1f).GetType();
 
-            SetDefault(OsuSetting.ScalingSizeX, 0.8f, 0.2f, 1f);
-            SetDefault(OsuSetting.ScalingSizeY, 0.8f, 0.2f, 1f);
+            TypeMapping[OsuSetting.ScalingSizeX] = SetDefault(OsuSetting.ScalingSizeX, 0.8f, 0.2f, 1f).GetType();
+            TypeMapping[OsuSetting.ScalingSizeY] = SetDefault(OsuSetting.ScalingSizeY, 0.8f, 0.2f, 1f).GetType();
 
-            SetDefault(OsuSetting.ScalingPositionX, 0.5f, 0f, 1f);
-            SetDefault(OsuSetting.ScalingPositionY, 0.5f, 0f, 1f);
+            TypeMapping[OsuSetting.ScalingPositionX] = SetDefault(OsuSetting.ScalingPositionX, 0.5f, 0f, 1f).GetType();
+            TypeMapping[OsuSetting.ScalingPositionY] = SetDefault(OsuSetting.ScalingPositionY, 0.5f, 0f, 1f).GetType();
 
-            SetDefault(OsuSetting.UIScale, 1f, 0.8f, 1.6f, 0.01f);
+            TypeMapping[OsuSetting.UIScale] = SetDefault(OsuSetting.UIScale, 1f, 0.8f, 1.6f, 0.01f).GetType();
 
-            SetDefault(OsuSetting.UIHoldActivationDelay, 200.0, 0.0, 500.0, 50.0);
+            TypeMapping[OsuSetting.UIHoldActivationDelay] = SetDefault(OsuSetting.UIHoldActivationDelay, 200.0, 0.0, 500.0, 50.0).GetType();
 
-            SetDefault(OsuSetting.IntroSequence, IntroSequence.Triangles);
+            TypeMapping[OsuSetting.IntroSequence] = SetDefault(OsuSetting.IntroSequence, IntroSequence.Triangles).GetType();
 
-            SetDefault(OsuSetting.MenuBackgroundSource, BackgroundSource.Skin);
-            SetDefault(OsuSetting.SeasonalBackgroundMode, SeasonalBackgroundMode.Sometimes);
+            TypeMapping[OsuSetting.MenuBackgroundSource] = SetDefault(OsuSetting.MenuBackgroundSource, BackgroundSource.Skin).GetType();
+            TypeMapping[OsuSetting.SeasonalBackgroundMode] = SetDefault(OsuSetting.SeasonalBackgroundMode, SeasonalBackgroundMode.Sometimes).GetType();
 
-            SetDefault(OsuSetting.DiscordRichPresence, DiscordRichPresenceMode.Full);
+            TypeMapping[OsuSetting.DiscordRichPresence] = SetDefault(OsuSetting.DiscordRichPresence, DiscordRichPresenceMode.Full).GetType();
 
-            SetDefault(OsuSetting.EditorDim, 0.25f, 0f, 0.75f, 0.25f);
-            SetDefault(OsuSetting.EditorWaveformOpacity, 0.25f, 0f, 1f, 0.25f);
-            SetDefault(OsuSetting.EditorShowHitMarkers, true);
-            SetDefault(OsuSetting.EditorAutoSeekOnPlacement, true);
-            SetDefault(OsuSetting.EditorLimitedDistanceSnap, false);
-            SetDefault(OsuSetting.EditorShowSpeedChanges, false);
+            TypeMapping[OsuSetting.EditorDim] = SetDefault(OsuSetting.EditorDim, 0.25f, 0f, 0.75f, 0.25f).GetType();
+            TypeMapping[OsuSetting.EditorWaveformOpacity] = SetDefault(OsuSetting.EditorWaveformOpacity, 0.25f, 0f, 1f, 0.25f).GetType();
+            TypeMapping[OsuSetting.EditorShowHitMarkers] = SetDefault(OsuSetting.EditorShowHitMarkers, true).GetType();
+            TypeMapping[OsuSetting.EditorAutoSeekOnPlacement] = SetDefault(OsuSetting.EditorAutoSeekOnPlacement, true).GetType();
+            TypeMapping[OsuSetting.EditorLimitedDistanceSnap] = SetDefault(OsuSetting.EditorLimitedDistanceSnap, false).GetType();
+            TypeMapping[OsuSetting.EditorShowSpeedChanges] = SetDefault(OsuSetting.EditorShowSpeedChanges, false).GetType();
 
-            SetDefault(OsuSetting.MultiplayerRoomFilter, RoomPermissionsFilter.All);
+            TypeMapping[OsuSetting.MultiplayerRoomFilter] = SetDefault(OsuSetting.MultiplayerRoomFilter, RoomPermissionsFilter.All).GetType();
 
-            SetDefault(OsuSetting.LastProcessedMetadataId, -1);
+            TypeMapping[OsuSetting.LastProcessedMetadataId] = SetDefault(OsuSetting.LastProcessedMetadataId, -1).GetType();
 
-            SetDefault(OsuSetting.ComboColourNormalisationAmount, 0.2f, 0f, 1f, 0.01f);
-            SetDefault<UserStatus?>(OsuSetting.UserOnlineStatus, null);
+            TypeMapping[OsuSetting.ComboColourNormalisationAmount] = SetDefault(OsuSetting.ComboColourNormalisationAmount, 0.2f, 0f, 1f, 0.01f).GetType();
+            TypeMapping[OsuSetting.UserOnlineStatus] = SetDefault<UserStatus?>(OsuSetting.UserOnlineStatus, null).GetType();
         }
 
         protected override bool CheckLookupContainsPrivateInformation(OsuSetting lookup)

@@ -1188,17 +1188,11 @@ namespace osu.Game
                 }
                 else if (recentLogCount == short_term_display_limit)
                 {
-                    string logFile = Logger.GetLogger(entry.Target.Value).Filename;
-
                     Schedule(() => Notifications.Post(new SimpleNotification
                     {
                         Icon = FontAwesome.Solid.EllipsisH,
                         Text = NotificationsStrings.SubsequentMessagesLogged,
-                        Activated = () =>
-                        {
-                            Logger.Storage.PresentFileExternally(logFile);
-                            return true;
-                        }
+                        Activated = () => true
                     }));
                 }
 

@@ -16,6 +16,7 @@ using osu.Game.Graphics.Containers;
 using osu.Framework.Input.Events;
 using System.Linq;
 using osu.Framework.Localisation;
+using osu.Framework.Logging;
 
 namespace osu.Game.Screens.Select.Options
 {
@@ -69,7 +70,8 @@ namespace osu.Game.Screens.Select.Options
         /// <param name="colour">Colour of the button.</param>
         /// <param name="icon">Icon of the button.</param>
         /// <param name="action">Binding the button does.</param>
-        public void AddButton(LocalisableString firstLine, string secondLine, IconUsage icon, Color4 colour, Action action)
+        /// <param name="enabled">Whether the button is enabled.</param>
+        public void AddButton(LocalisableString firstLine, string secondLine, IconUsage icon, Color4 colour, Action action, bool enabled = true)
         {
             var button = new BeatmapOptionsButton
             {
@@ -79,6 +81,12 @@ namespace osu.Game.Screens.Select.Options
                 ButtonColour = colour,
                 Action = () =>
                 {
+                    if (!enabled)
+                    {
+                        Logger.Log(@"Button is disabled!", LoggingTarget.Runtime, LogLevel.Important);
+                        return;
+                    }
+
                     Hide();
                     action?.Invoke();
                 },

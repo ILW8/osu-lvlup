@@ -14,6 +14,9 @@ namespace osu.Game.Overlays.Settings.Sections.Maintenance
     {
         protected override LocalisableString Header => "Settings";
 
+        [Resolved(CanBeNull = true)]
+        private FirstRunSetupOverlay? firstRunSetupOverlay { get; set; }
+
         [BackgroundDependencyLoader]
         private void load(IDialogOverlay? dialogOverlay, OsuConfigManager config)
         {
@@ -78,6 +81,8 @@ namespace osu.Game.Overlays.Settings.Sections.Maintenance
                                 // var configBindable = config.GetBindable<object>(settingKey);
                                 // configBindable.Value = configBindable.Default; // type error, can't convert from object to <whatever> type
                             }
+
+                            firstRunSetupOverlay?.Show();
                         });
                     }));
                 }

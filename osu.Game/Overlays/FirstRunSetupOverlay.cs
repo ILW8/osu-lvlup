@@ -17,7 +17,6 @@ using osu.Framework.Localisation;
 using osu.Framework.Screens;
 using osu.Framework.Threading;
 using osu.Game.Configuration;
-using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Input.Bindings;
@@ -71,13 +70,10 @@ namespace osu.Game.Overlays
         }
 
         [BackgroundDependencyLoader(permitNulls: true)]
-        private void load(OsuColour colours, LegacyImportManager? legacyImportManager)
+        private void load(OsuColour colours)
         {
             steps.Add(typeof(ScreenWelcome));
             steps.Add(typeof(ScreenUIScale));
-            steps.Add(typeof(ScreenBeatmaps));
-            if (legacyImportManager?.SupportsImportFromStable == true)
-                steps.Add(typeof(ScreenImportFromStable));
             steps.Add(typeof(ScreenBehaviour));
 
             Header.Title = FirstRunSetupOverlayStrings.FirstRunSetupTitle;
